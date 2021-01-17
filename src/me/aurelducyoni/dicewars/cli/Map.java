@@ -1,9 +1,12 @@
-package me.aurelducyoni.dicewars;
+package me.aurelducyoni.dicewars.cli;
 
-import me.aurelducyoni.dicewars.exceptions.NoNeighborsException;
-import me.aurelducyoni.dicewars.exceptions.NotContiguousException;
+import me.aurelducyoni.dicewars.cli.exceptions.NoNeighborsException;
+import me.aurelducyoni.dicewars.cli.exceptions.NotContiguousException;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.*;
 
 public class Map {
@@ -11,11 +14,33 @@ public class Map {
     private final int size;
     private final Territory[][] map;
 
-    public Map(File file) {
-        // TODO
+    public Map(File file) throws IOException {
+        FileInputStream fis = new FileInputStream(file);
+        ObjectInputStream ois = new ObjectInputStream(fis);
 
-        size = 0;
-        map = new Territory[0][0];
+        int playerCount = ois.readInt();
+        java.util.Map<Integer, Player> players = new HashMap<>();
+
+        for (int i = 0; i < playerCount; i++) {
+            Player player = new Player(ois.readInt());
+            players.put(player.getId(), player);
+        }
+
+        size = ois.readInt();
+        map = new Territory[size][size];
+
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                int owner = ois.readInt();
+                if (owner != 0) {
+                    int strength = ois.readInt();
+                    map[y][x] = new Territory(x, y, players.get(owner), strength);
+                }
+            }
+        }
+
+        ois.close();
+        fis.close();
     }
 
     public Map(java.util.Map<Integer, Player> players) {
@@ -40,7 +65,7 @@ public class Map {
                     AbstractMap.SimpleEntry<Integer, Integer> coordinates = territories.remove(random.nextInt(territories.size()));
                     int x = coordinates.getKey(), y = coordinates.getValue();
 
-                    Territory territory = new Territory(player, Game.MIN_DICE_PER_TERRITORY);
+                    Territory territory = new Territory(x, y, player, Game.MIN_DICE_PER_TERRITORY);
                     map[y][x] = territory;
 
                     for (int j = territory.getStrength(); j < Game.MAX_DICE_PER_TERRITORY; j++)

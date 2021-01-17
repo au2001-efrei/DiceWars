@@ -1,8 +1,8 @@
-package me.aurelducyoni.dicewars;
+package me.aurelducyoni.dicewars.cli;
 
-import me.aurelducyoni.dicewars.exceptions.InvalidTerritoryException;
-import me.aurelducyoni.dicewars.exceptions.SelfTargetException;
-import me.aurelducyoni.dicewars.exceptions.WeakTerritoryException;
+import me.aurelducyoni.dicewars.cli.exceptions.InvalidTerritoryException;
+import me.aurelducyoni.dicewars.cli.exceptions.SelfTargetException;
+import me.aurelducyoni.dicewars.cli.exceptions.WeakTerritoryException;
 
 import java.util.*;
 
@@ -14,9 +14,13 @@ public class Player {
     private final java.util.Map<Integer, Territory> territories;
     private boolean playing = false;
 
-    public Player() {
-        this.id = ++MAX_ID;
+    public Player(int id) {
+        this.id = id;
         territories = new HashMap<>();
+    }
+
+    public Player() {
+        this(++MAX_ID);
     }
 
     public Player(java.util.Map<Integer, Territory> territories) {

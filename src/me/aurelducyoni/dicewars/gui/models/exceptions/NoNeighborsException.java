@@ -1,4 +1,4 @@
-package me.aurelducyoni.dicewars.exceptions;
+package me.aurelducyoni.dicewars.gui.models.exceptions;
 
 public class NoNeighborsException extends Throwable {
 

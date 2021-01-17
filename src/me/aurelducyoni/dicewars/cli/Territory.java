@@ -1,4 +1,4 @@
-package me.aurelducyoni.dicewars;
+package me.aurelducyoni.dicewars.cli;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,27 +7,37 @@ public class Territory {
 
     private static int MAX_ID = 0;
 
-    private final int id;
+    private final int id, x, y;
     private Player owner;
     private int strength;
     private final java.util.Map<Integer, Territory> neighbors;
 
-    public Territory(Player owner, int strength) {
+    public Territory(int x, int y, Player owner, int strength) {
         this.id = ++MAX_ID;
+        this.x = x;
+        this.y = y;
         this.owner = owner;
         this.strength = strength;
 
         neighbors = new HashMap<>();
     }
 
-    public Territory(Player owner, int strength, java.util.Map<Integer, Territory> neighbors) {
-        this(owner, strength);
+    public Territory(int x, int y, Player owner, int strength, java.util.Map<Integer, Territory> neighbors) {
+        this(x, y, owner, strength);
 
         this.neighbors.putAll(neighbors);
     }
 
     public int getId() {
         return id;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public Player getOwner() {

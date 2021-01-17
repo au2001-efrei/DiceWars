@@ -1,6 +1,7 @@
-package me.aurelducyoni.dicewars;
+package me.aurelducyoni.dicewars.cli;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class Game implements Runnable {
@@ -12,7 +13,7 @@ public class Game implements Runnable {
     public static final Game GAME = new Game();
     public static final Random RANDOM = new Random();
 
-    private me.aurelducyoni.dicewars.Map map = null;
+    private Map map = null;
     private java.util.Map<Integer, Player> players = null;
 
     private Game() {}
@@ -32,11 +33,15 @@ public class Game implements Runnable {
                 file = new File(scanner.nextLine());
             } while (!file.isFile());
 
-            map = new me.aurelducyoni.dicewars.Map(file);
-            players = new HashMap<>();
-            for (Territory territory : map.getTerritories().values()) {
-                Player player = territory.getOwner();
-                players.put(player.getId(), player);
+            try {
+                map = new Map(file);
+                players = new HashMap<>();
+                for (Territory territory : map.getTerritories().values()) {
+                    Player player = territory.getOwner();
+                    players.put(player.getId(), player);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         } else {
             System.out.print("Enter the number of players: ");
@@ -47,7 +52,7 @@ public class Game implements Runnable {
                 Player player = new Player();
                 players.put(player.getId(), player);
             }
-            map = new me.aurelducyoni.dicewars.Map(players);
+            map = new Map(players);
         }
     }
 
@@ -76,6 +81,8 @@ public class Game implements Runnable {
                 for (int j = territory.getStrength(); j < MAX_DICE_PER_TERRITORY; j++)
                     dices.add(territory);
             }
+
+            newDice = Math.min(newDice, dices.size());
 
             for (int i = 0; i < newDice; i++) {
                 Territory territory = dices.remove(Game.RANDOM.nextInt(dices.size()));

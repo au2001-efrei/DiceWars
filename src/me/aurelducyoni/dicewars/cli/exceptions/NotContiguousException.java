@@ -1,4 +1,4 @@
-package me.aurelducyoni.dicewars.exceptions;
+package me.aurelducyoni.dicewars.cli.exceptions;
 
 public class NotContiguousException extends Throwable {
 
